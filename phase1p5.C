@@ -30,7 +30,7 @@ void phase1p5 (string file){
 //   double dummyBranch; //Must declare it here, thanks to Taeun for clearing this up for me :-)
    bool denominator_ZplusY;
    
-   TFile *file2 = TFile::Open("myNewFile.root", "RECREATE");
+   TFile *file2 = TFile::Open("myNewFile_test.root", "RECREATE");
    TTree* tree2 = TREE->fChain->CloneTree(0); //Clone this with the 0 so you get a skeleton of the tree with all the right branches but no entries
    //later you will call Fill() on this tree and because of the magic of CloneTree, it will restore the information that was in each branch of the original tree
    //this is the tree that you are going to add a branch to, hence the reason for filling it in the loop
@@ -72,7 +72,7 @@ void phase1p5 (string file){
            // dummyBranch =  -99;
             denominator_ZplusY = TREEMC->denominator_ZplusY->at(0);
             tree2->Fill();
-            
+            break;
           }
           
           
