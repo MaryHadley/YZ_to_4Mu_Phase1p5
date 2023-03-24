@@ -29,6 +29,9 @@ void phase1p5 (string file){
    
 //   double dummyBranch; //Must declare it here, thanks to Taeun for clearing this up for me :-)
    bool denominator_ZplusY;
+   bool truth_eventHasZUpsi1To4Mu;
+   bool truth_eventHasZUpsi2To4Mu;
+   bool truth_eventHasZUpsi3To4Mu;
    
    TFile *file2 = TFile::Open("myNewFile.root", "RECREATE");
    TTree* tree2 = TREE->fChain->CloneTree(0); //Clone this with the 0 so you get a skeleton of the tree with all the right branches but no entries
@@ -43,6 +46,9 @@ void phase1p5 (string file){
    
 //   tree2->Branch("dummyBranch", &dummyBranch, "dummyBranch/D");
    tree2->Branch("denominator_ZplusY", &denominator_ZplusY, "denominator_ZplusY/O"); //O (the letter, not the number 0) for booleans, see: https://root.cern.ch/doc/master/classTTree.html#addcolumnoffundamentaltypes (thanks to Kevin Pedro for pointing me to this link)
+   tree2->Branch("truth_eventHasZUpsi1To4Mu", &truth_eventHasZUpsi1To4Mu, "truth_eventHasZUpsi1To4Mu/O");
+   tree2->Branch("truth_eventHasZUpsi2To4Mu", &truth_eventHasZUpsi2To4Mu, "truth_eventHasZUpsi2To4Mu/O");
+   tree2->Branch("truth_eventHasZUpsi3To4Mu", &truth_eventHasZUpsi3To4Mu, "truth_eventHasZUpsi3To4Mu/O");
    
   //Announce what root_file is
   std::cout << "////////////////////////////////////////" << std::endl;
@@ -105,7 +111,10 @@ void phase1p5 (string file){
 //   
 //   }
        
-       std::map<std::string, bool> tree_mc_zplusy; //Create look-up table here
+       std::map<std::string, bool> tree_mc_zplusy; //Create look-up tables here
+       std::map<std::string, bool> tree_mc_truth_eventHasZUpsi1To4Mu;
+       std::map<std::string, bool> tree_mc_truth_eventHasZUpsi2To4Mu;
+       std::map<std::string, bool> tree_mc_truth_eventHasZUpsi3To4Mu;
        
        int entriesMC = (TREEMC->fChain)->GetEntries();
        for(int jEntry=0; jEntry<entriesMC; jEntry++) {
@@ -114,7 +123,10 @@ void phase1p5 (string file){
          my_element = std::to_string(TREEMC->mc_run_number->at(0)) + std::string("_") + std::to_string(TREEMC->mc_event_number->at(0)) + std::string("_") + std::to_string(TREEMC->mc_lumi_section->at(0));
          //std::cout << "my_element:  " << my_element << std::endl;
          tree_mc_zplusy.insert({ my_element, TREEMC->denominator_ZplusY->at(0) }); //Fill the look up table for every event of treemc with run_event_lumi and the boolean value
-       } //End of loop over treemc and we have filled the look-up table called tree_mc_zplusy 
+         tree_mc_truth_eventHasZUpsi1To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi1To4Mu->at(0) });
+         tree_mc_truth_eventHasZUpsi2To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi2To4Mu->at(0) });
+         tree_mc_truth_eventHasZUpsi3To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi3To4Mu->at(0) });
+       } //End of loop over treemc and we have filled the look-up tables called tree_mc_zplusy, tree_mc_truth_eventHasZUpsi1To4Mu, tree_mc_truth_eventHasZUpsi2To4Mu, tree_mc_truth_eventHasZUpsi3To4Mu
        
        //Now loop on tree
        for(int iEntry=0; iEntry<entries; iEntry++) {
@@ -123,6 +135,10 @@ void phase1p5 (string file){
          look_up_element = std::to_string(TREE->run_number_of_event->at(0)) + std::string("_") + std::to_string(TREE->event_number_of_event->at(0)) + std::string("_") + std::to_string(TREE->lumi_section_of_event->at(0)); //Pattern is run_event_lumi, just like in our look-up table tree_mc_zplusy
        //  std::cout << "look_up_element:  " << look_up_element << std::endl; 
        denominator_ZplusY = tree_mc_zplusy[look_up_element]; //Here you read the look-up table for a given run_event_lumi that is in tree. You're exploiting the fact here that tree by definition is a subset of treemc 
+       truth_eventHasZUpsi1To4Mu = tree_mc_truth_eventHasZUpsi1To4Mu[look_up_element];
+       truth_eventHasZUpsi2To4Mu = tree_mc_truth_eventHasZUpsi2To4Mu[look_up_element];
+       truth_eventHasZUpsi3To4Mu = tree_mc_truth_eventHasZUpsi3To4Mu[look_up_element];
+       
        tree2->Fill();
        
        } //End loop over tree
