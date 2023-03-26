@@ -33,6 +33,25 @@ void phase1p5 (string file){
    bool truth_eventHasZUpsi2To4Mu;
    bool truth_eventHasZUpsi3To4Mu;
    
+   std::vector<double> truth_Zmuon_pt;
+   std::vector<double> truth_Zmuon_eta;
+   std::vector<double> truth_Zmuon_phi;
+   
+   std::vector<double> truth_Upsimuon_pt;
+   std::vector<double> truth_Upsimuon_eta;
+   std::vector<double> truth_Upsimuon_phi;
+   
+   std::vector<double> truth_Upsi2muon_pt;
+   std::vector<double> truth_Upsi2muon_eta;
+   std::vector<double> truth_Upsi2muon_phi;
+   
+   std::vector<double> truth_Upsi3muon_pt;
+   std::vector<double> truth_Upsi3muon_eta;
+   std::vector<double> truth_Upsi3muon_phi;
+   
+   
+   
+   
    TFile *file2 = TFile::Open("myNewFile.root", "RECREATE");
    TTree* tree2 = TREE->fChain->CloneTree(0); //Clone this with the 0 so you get a skeleton of the tree with all the right branches but no entries
    //later you will call Fill() on this tree and because of the magic of CloneTree, it will restore the information that was in each branch of the original tree
@@ -49,6 +68,24 @@ void phase1p5 (string file){
    tree2->Branch("truth_eventHasZUpsi1To4Mu", &truth_eventHasZUpsi1To4Mu, "truth_eventHasZUpsi1To4Mu/O");
    tree2->Branch("truth_eventHasZUpsi2To4Mu", &truth_eventHasZUpsi2To4Mu, "truth_eventHasZUpsi2To4Mu/O");
    tree2->Branch("truth_eventHasZUpsi3To4Mu", &truth_eventHasZUpsi3To4Mu, "truth_eventHasZUpsi3To4Mu/O");
+   
+   tree2->Branch("truth_Zmuon_pt", "std::vector<double>", &truth_Zmuon_pt, 32000, 0); //Example of how to do this comes from Kevin Pedro, see: https://github.com/kpedro88/Analysis/blob/c0b8afd6271bc92d3af21df140eee57e81749ade/KCode/KCommonSelectors.h#L237
+   tree2->Branch("truth_Zmuon_eta", "std::vector<double>", &truth_Zmuon_eta, 32000, 0); //See email titled "question about indicating (or not) the type of a branch" for discussion of what buffer size and split level to use
+   tree2->Branch("truth_Zmuon_phi", "std::vector<double>", &truth_Zmuon_phi, 32000, 0); //32000 is the default buffer size, 0 is NOT the default split level but after testing and considering advice from Kevin (details in the indicated email thread) I went with split level 0 as he did in his example
+   
+   tree2->Branch("truth_Upsimuon_pt", "std::vector<double>", &truth_Upsimuon_pt, 32000, 0);
+   tree2->Branch("truth_Upsimuon_eta", "std::vector<double>", &truth_Upsimuon_eta, 32000, 0);
+   tree2->Branch("truth_Upsimuon_phi", "std::vector<double>", &truth_Upsimuon_phi, 32000, 0);
+   
+   tree2->Branch("truth_Upsi2muon_pt", "std::vector<double>", &truth_Upsi2muon_pt, 32000, 0);
+   tree2->Branch("truth_Upsi2muon_eta", "std::vector<double>", &truth_Upsi2muon_eta, 32000, 0);
+   tree2->Branch("truth_Upsi2muon_phi", "std::vector<double>", &truth_Upsi2muon_phi, 32000, 0);
+   
+   tree2->Branch("truth_Upsi3muon_pt", "std::vector<double>", &truth_Upsi3muon_pt, 32000, 0);
+   tree2->Branch("truth_Upsi3muon_eta", "std::vector<double>", &truth_Upsi3muon_eta, 32000, 0);
+   tree2->Branch("truth_Upsi3muon_phi", "std::vector<double>", &truth_Upsi3muon_phi, 32000, 0);
+   
+   
    
   //Announce what root_file is
   std::cout << "////////////////////////////////////////" << std::endl;
@@ -116,6 +153,24 @@ void phase1p5 (string file){
        std::map<std::string, bool> tree_mc_truth_eventHasZUpsi2To4Mu;
        std::map<std::string, bool> tree_mc_truth_eventHasZUpsi3To4Mu;
        
+       std::map<std::string, std::vector<double>> tree_mc_truth_Zmuon_pt;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Zmuon_eta;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Zmuon_phi;
+       
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsimuon_pt;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsimuon_eta;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsimuon_phi;
+       
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi2muon_pt;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi2muon_eta;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi2muon_phi;
+       
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi3muon_pt;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi3muon_eta;
+       std::map<std::string, std::vector<double>> tree_mc_truth_Upsi3muon_phi;
+       
+       
+       
        int entriesMC = (TREEMC->fChain)->GetEntries();
        for(int jEntry=0; jEntry<entriesMC; jEntry++) {
          (TREEMC->fChain)->GetEntry(jEntry);
@@ -126,8 +181,37 @@ void phase1p5 (string file){
          tree_mc_truth_eventHasZUpsi1To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi1To4Mu->at(0) });
          tree_mc_truth_eventHasZUpsi2To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi2To4Mu->at(0) });
          tree_mc_truth_eventHasZUpsi3To4Mu.insert({ my_element, TREEMC->truth_eventHasZUpsi3To4Mu->at(0) });
-       } //End of loop over treemc and we have filled the look-up tables called tree_mc_zplusy, tree_mc_truth_eventHasZUpsi1To4Mu, tree_mc_truth_eventHasZUpsi2To4Mu, tree_mc_truth_eventHasZUpsi3To4Mu
-       
+         
+         //std::cout << "TREEMC->truth_Zmuon_pt->size():  " << TREEMC->truth_Zmuon_pt->size() << std::endl; 
+         tree_mc_truth_Zmuon_pt.insert({ my_element, *TREEMC->truth_Zmuon_pt }); //Remember to use the * to get the vector of doubles that the pointer TREEMC->truth_Zmuon_pt points to; i.e.: to dereference the pointer and get at what we want, which is the vector of doubles it is pointing to
+         tree_mc_truth_Zmuon_eta.insert({ my_element, *TREEMC->truth_Zmuon_eta });
+         tree_mc_truth_Zmuon_phi.insert({ my_element, *TREEMC->truth_Zmuon_phi });
+         
+         tree_mc_truth_Upsimuon_pt.insert({ my_element, *TREEMC->truth_Upsimuon_pt });
+         tree_mc_truth_Upsimuon_eta.insert({ my_element, *TREEMC->truth_Upsimuon_eta });
+         tree_mc_truth_Upsimuon_phi.insert({ my_element, *TREEMC->truth_Upsimuon_phi });
+         
+         tree_mc_truth_Upsi2muon_pt.insert({ my_element, *TREEMC->truth_Upsi2muon_pt });
+         tree_mc_truth_Upsi2muon_eta.insert({ my_element, *TREEMC->truth_Upsi2muon_eta });
+         tree_mc_truth_Upsi2muon_phi.insert({ my_element, *TREEMC->truth_Upsi2muon_phi });
+         
+         tree_mc_truth_Upsi3muon_pt.insert({ my_element, *TREEMC->truth_Upsi3muon_pt });
+         tree_mc_truth_Upsi3muon_eta.insert({ my_element, *TREEMC->truth_Upsi3muon_eta });
+         tree_mc_truth_Upsi3muon_phi.insert({ my_element, *TREEMC->truth_Upsi3muon_phi });
+         
+         //Stuff I tried that didn't work...
+         //tree_mc_truth_Zmuon_pt.insert({ my_element, TREEMC->truth_Zmuon_pt->at(0) });
+         //tree_mc_truth_Zmuon_pt[my_element].push_back(TREEMC->truth_Zmuon_pt->at(1));
+        // tree_mc_truth_Zmuon_pt.insert(std::make_pair(my_element, TREEMC->truth_Zmuon_pt));
+        
+        
+        
+         //std::cout << "tree_mc_truth_Zmuon_pt[my_element].size():  " << tree_mc_truth_Zmuon_pt[my_element].size() << std::endl;
+       } //End of loop over treemc and we have filled the look-up tables called tree_mc_zplusy, tree_mc_truth_eventHasZUpsi1To4Mu, tree_mc_truth_eventHasZUpsi2To4Mu, tree_mc_truth_eventHasZUpsi3To4Mu,
+          //tree_mc_truth_Zmuon_pt, tree_mc_truth_Zmuon_eta, tree_mc_truth_Zmuon_phi, tree_mc_truth_Upsimuon_pt, tree_mc_truth_Upsimuon_eta, tree_mc_truth_Upsimuon_phi,
+          //tree_mc_truth_Upsi2muon_pt, tree_mc_truth_Upsi2muon_eta, tree_mc_truth_Upsi2muon_phi, 
+          //tree_mc_truth_Upsi3muon_pt, tree_mc_truth_Upsi3muon_eta, tree_mc_truth_Upsi3muon_phi
+          
        //Now loop on tree
        for(int iEntry=0; iEntry<entries; iEntry++) {
          (TREE->fChain)->GetEntry(iEntry);
@@ -139,6 +223,23 @@ void phase1p5 (string file){
        truth_eventHasZUpsi2To4Mu = tree_mc_truth_eventHasZUpsi2To4Mu[look_up_element];
        truth_eventHasZUpsi3To4Mu = tree_mc_truth_eventHasZUpsi3To4Mu[look_up_element];
        
+       truth_Zmuon_pt            = tree_mc_truth_Zmuon_pt[look_up_element];
+       truth_Zmuon_eta           = tree_mc_truth_Zmuon_eta[look_up_element];
+       truth_Zmuon_phi           = tree_mc_truth_Zmuon_phi[look_up_element];
+       
+       truth_Upsimuon_pt         = tree_mc_truth_Upsimuon_pt[look_up_element];
+       truth_Upsimuon_eta        = tree_mc_truth_Upsimuon_eta[look_up_element];
+       truth_Upsimuon_phi        = tree_mc_truth_Upsimuon_phi[look_up_element];
+       
+       truth_Upsi2muon_pt        = tree_mc_truth_Upsi2muon_pt[look_up_element];
+       truth_Upsi2muon_eta       = tree_mc_truth_Upsi2muon_eta[look_up_element];
+       truth_Upsi2muon_phi       = tree_mc_truth_Upsi2muon_phi[look_up_element];
+       
+       truth_Upsi3muon_pt        = tree_mc_truth_Upsi3muon_pt[look_up_element];
+       truth_Upsi3muon_eta       = tree_mc_truth_Upsi3muon_eta[look_up_element];
+       truth_Upsi3muon_phi       = tree_mc_truth_Upsi3muon_phi[look_up_element];
+       
+       //std::cout << "truth_Zmuon_pt.at(0):  " << truth_Zmuon_pt.at(0) << std::endl; 
        tree2->Fill();
        
        } //End loop over tree
