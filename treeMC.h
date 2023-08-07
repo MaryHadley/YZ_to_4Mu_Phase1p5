@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////
 // This class has been automatically generated on
-// Mon Jan 30 05:04:27 2023 by ROOT version 6.14/09
+// Sun Aug  6 12:44:42 2023 by ROOT version 6.14/09
 // from TTree treemc/treemc
-// found on file: flatFile_short_1000Ev.root
+// found on file: flatFile_SPS_2018_Y1SZ_test6Aug202.root
 //////////////////////////////////////////////////////////
 
 #ifndef treeMC_h
@@ -143,6 +143,8 @@ public :
    vector<bool>    *truth_eventHasZUpsi2To4Mu;
    vector<bool>    *truth_eventHasZUpsi3To4Mu;
    vector<bool>    *denominator_ZplusY;
+   vector<double>  *SPS_LHE_Weight;
+   vector<double>  *SPS_Subprocess_XSec;
 
    // List of branches
    TBranch        *b_truth_Zmuon_pt;   //!
@@ -262,6 +264,8 @@ public :
    TBranch        *b_truth_eventHasZUpsi2To4Mu;   //!
    TBranch        *b_truth_eventHasZUpsi3To4Mu;   //!
    TBranch        *b_denominator_ZplusY;   //!
+   TBranch        *b_SPS_LHE_Weight;   //!
+   TBranch        *b_SPS_Subprocess_XSec;   //!
 
    treeMC(TTree *tree=0);
    virtual ~treeMC();
@@ -282,11 +286,11 @@ treeMC::treeMC(TTree *tree) : fChain(0)
 // // if parameter tree is not specified (or zero), connect the file
 // // used to generate this class and read the Tree.
 //    if (tree == 0) {
-//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("flatFile_short_1000Ev.root");
+//       TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("flatFile_SPS_2018_Y1SZ_test6Aug202.root");
 //       if (!f || !f->IsOpen()) {
-//          f = new TFile("flatFile_short_1000Ev.root");
+//          f = new TFile("flatFile_SPS_2018_Y1SZ_test6Aug202.root");
 //       }
-//       TDirectory * dir = (TDirectory*)f->Get("flatFile_short_1000Ev.root:/ZmuonAnalyzer");
+//       TDirectory * dir = (TDirectory*)f->Get("flatFile_SPS_2018_Y1SZ_test6Aug202.root:/ZmuonAnalyzer");
 //       dir->GetObject("treemc",tree);
 // 
 //    }
@@ -459,6 +463,8 @@ void treeMC::Init(TTree *tree)
    truth_eventHasZUpsi2To4Mu = 0;
    truth_eventHasZUpsi3To4Mu = 0;
    denominator_ZplusY = 0;
+   SPS_LHE_Weight = 0;
+   SPS_Subprocess_XSec = 0;
    // Set branch addresses and branch pointers
    if (!tree) return;
    fChain = tree;
@@ -582,6 +588,8 @@ void treeMC::Init(TTree *tree)
    fChain->SetBranchAddress("truth_eventHasZUpsi2To4Mu", &truth_eventHasZUpsi2To4Mu, &b_truth_eventHasZUpsi2To4Mu);
    fChain->SetBranchAddress("truth_eventHasZUpsi3To4Mu", &truth_eventHasZUpsi3To4Mu, &b_truth_eventHasZUpsi3To4Mu);
    fChain->SetBranchAddress("denominator_ZplusY", &denominator_ZplusY, &b_denominator_ZplusY);
+   fChain->SetBranchAddress("SPS_LHE_Weight", &SPS_LHE_Weight, &b_SPS_LHE_Weight);
+   fChain->SetBranchAddress("SPS_Subprocess_XSec", &SPS_Subprocess_XSec, &b_SPS_Subprocess_XSec);
    Notify();
 }
 

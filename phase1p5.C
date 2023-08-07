@@ -49,6 +49,9 @@ void phase1p5 (string file){
    std::vector<double> truth_Upsi3muon_eta;
    std::vector<double> truth_Upsi3muon_phi;
    
+   std::vector<double> SPS_LHE_Weight;
+   std::vector<double> SPS_Subprocess_XSec;
+   
    
    
    
@@ -85,6 +88,8 @@ void phase1p5 (string file){
    tree2->Branch("truth_Upsi3muon_eta", "std::vector<double>", &truth_Upsi3muon_eta, 32000, 0);
    tree2->Branch("truth_Upsi3muon_phi", "std::vector<double>", &truth_Upsi3muon_phi, 32000, 0);
    
+   tree2->Branch("SPS_LHE_Weight", "std::vector<double>", &SPS_LHE_Weight, 32000,0);
+   tree2->Branch("SPS_Subprocess_XSec", "std::vector<double>", &SPS_Subprocess_XSec, 32000, 0);
    
    
   //Announce what root_file is
@@ -169,6 +174,8 @@ void phase1p5 (string file){
        std::map<std::string, std::vector<double>> tree_mc_truth_Upsi3muon_eta;
        std::map<std::string, std::vector<double>> tree_mc_truth_Upsi3muon_phi;
        
+       std::map<std::string, std::vector<double>> tree_mc_SPS_LHE_Weight;
+       std::map<std::string, std::vector<double>> tree_mc_SPS_Subprocess_XSec;
        
        
        int entriesMC = (TREEMC->fChain)->GetEntries();
@@ -199,6 +206,9 @@ void phase1p5 (string file){
          tree_mc_truth_Upsi3muon_eta.insert({ my_element, *TREEMC->truth_Upsi3muon_eta });
          tree_mc_truth_Upsi3muon_phi.insert({ my_element, *TREEMC->truth_Upsi3muon_phi });
          
+         tree_mc_SPS_LHE_Weight.insert({ my_element, *TREEMC->SPS_LHE_Weight });
+         tree_mc_SPS_Subprocess_XSec.insert({ my_element, *TREEMC->SPS_Subprocess_XSec });
+         
          //Stuff I tried that didn't work...
          //tree_mc_truth_Zmuon_pt.insert({ my_element, TREEMC->truth_Zmuon_pt->at(0) });
          //tree_mc_truth_Zmuon_pt[my_element].push_back(TREEMC->truth_Zmuon_pt->at(1));
@@ -210,7 +220,8 @@ void phase1p5 (string file){
        } //End of loop over treemc and we have filled the look-up tables called tree_mc_zplusy, tree_mc_truth_eventHasZUpsi1To4Mu, tree_mc_truth_eventHasZUpsi2To4Mu, tree_mc_truth_eventHasZUpsi3To4Mu,
           //tree_mc_truth_Zmuon_pt, tree_mc_truth_Zmuon_eta, tree_mc_truth_Zmuon_phi, tree_mc_truth_Upsimuon_pt, tree_mc_truth_Upsimuon_eta, tree_mc_truth_Upsimuon_phi,
           //tree_mc_truth_Upsi2muon_pt, tree_mc_truth_Upsi2muon_eta, tree_mc_truth_Upsi2muon_phi, 
-          //tree_mc_truth_Upsi3muon_pt, tree_mc_truth_Upsi3muon_eta, tree_mc_truth_Upsi3muon_phi
+          //tree_mc_truth_Upsi3muon_pt, tree_mc_truth_Upsi3muon_eta, tree_mc_truth_Upsi3muon_phi,
+          //tree_mc_SPS_LHE_Weight, tree_mc_SPS_Subprocess_XSec
           
        //Now loop on tree
        for(int iEntry=0; iEntry<entries; iEntry++) {
@@ -238,6 +249,10 @@ void phase1p5 (string file){
        truth_Upsi3muon_pt        = tree_mc_truth_Upsi3muon_pt[look_up_element];
        truth_Upsi3muon_eta       = tree_mc_truth_Upsi3muon_eta[look_up_element];
        truth_Upsi3muon_phi       = tree_mc_truth_Upsi3muon_phi[look_up_element];
+       
+       SPS_LHE_Weight            = tree_mc_SPS_LHE_Weight[look_up_element];
+       SPS_Subprocess_XSec       = tree_mc_SPS_Subprocess_XSec[look_up_element];
+       
        
        //std::cout << "truth_Zmuon_pt.at(0):  " << truth_Zmuon_pt.at(0) << std::endl; 
        tree2->Fill();
